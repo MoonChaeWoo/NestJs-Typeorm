@@ -4,6 +4,7 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {UserModel} from "./entity/user.entity";
 import {ProfileModel} from "./entity/profile.entity";
 import {PostModel} from "./entity/post.entity";
+import {TagModel} from "./entity/tag.entity";
 
 @Controller()
 export class AppController {
@@ -13,7 +14,9 @@ export class AppController {
       @InjectRepository(ProfileModel)
       private readonly profileRepository : Repository<ProfileModel>,
       @InjectRepository(PostModel)
-      private readonly postRepository : Repository<PostModel>
+      private readonly postRepository : Repository<PostModel>,
+      @InjectRepository(TagModel)
+      private readonly tagRepository : Repository<TagModel>
   ) {}
 
   @Post('users')
@@ -72,5 +75,41 @@ export class AppController {
     });
 
     return user;
+  }
+
+  @Get('posts/posts')
+  async readPosts(){
+    return await this.postRepository.find({
+      relations : {
+        tags : true
+      }
+    });
+  }
+
+  @Get('posts/tags')
+  async readTags(){
+    return await this.tagRepository.find({
+      relations : {
+        posts : true
+      }
+    });
+  }
+
+  @Post('posts/tags')
+  async createPostsTags(){
+    const post1 = await this.postRepository.save({
+      title : 'test_Many_To_Many Test1'
+    });
+
+    const post2 = await this.postRepository.save({
+      title : 'test_Many_To_Many Test2'
+    });
+
+    const tag = await this.tagRepository.save({
+        name : 'tag_Test',
+        posts : [post1, post2]
+    });
+
+    return [post1, post2];
   }
 }
