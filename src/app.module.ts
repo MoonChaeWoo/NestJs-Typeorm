@@ -5,6 +5,7 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 import {UserModel} from "./entity/user.entity";
 import {StudentModel, TeacherModel} from "./entity/person.entity";
 import {AirplaneModel, BookModel, CarModel, ComputerModel, SingleBaseModel} from "./entity/inheritance.entity";
+import {ProfileModel} from "./entity/profile.entity";
 
 @Module({
   imports: [
@@ -23,14 +24,14 @@ import {AirplaneModel, BookModel, CarModel, ComputerModel, SingleBaseModel} from
         CarModel,
         SingleBaseModel,
         ComputerModel,
-        AirplaneModel
+        AirplaneModel,
+        ProfileModel
     ],
     synchronize : true
   }),
       TypeOrmModule.forFeature([
           UserModel,
-          StudentModel,
-          TeacherModel
+          ProfileModel
       ])
   ],
 

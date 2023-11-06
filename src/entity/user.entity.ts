@@ -1,10 +1,12 @@
 import {
     Column,
-    CreateDateColumn, Entity, Generated,
+    CreateDateColumn, Entity, Generated, OneToOne,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
     VersionColumn
 } from "typeorm";
+import {ProfileModel} from "./profile.entity";
+import {JoinColumn} from "typeorm";
 
 export enum Role{
     USER = 'user',
@@ -28,38 +30,41 @@ export class UserModel{
     @PrimaryGeneratedColumn()
     id : number;
 
-    @Column({
-        // DB에서 인지하는 컬럼 타입
-        // 미설정 시 자동으로 유추됨
-        type : 'varchar',
-        // 데이터베이스 컬럼이름
-        // 미설정 시 프로퍼티 이름으로 자동유추됨
-        name : 'title',
-        // 값의 길이
-        // 입력 할 수 있는 글자의 길이 설정
-        length : 300,
-        // default : true (null 입력 가능)
-        nullable : true,
-        // false 면 처음 저장할 때 값으로 고정
-        // false일 땐 이후에는 값 변경이 불가능
-        update : true,
-        // 기본값은 true
-        // find()를 실행할 때 기본으로 값을 불러올지 설정
-        // 아래와 같이 옵션을 줘야하며 필요한 값들도 저렇게 설정해야함.
-        // find({
-        //     select : {
-        //           id : true,
-        //           title : true
-        //      }
-        // })
-        select : true,
-        // 아무것도 입력하지 않았을 시 기본이 되는값
-        default : 'default value',
-        // 컬럼 중에서 유일무이한 갑이 돼어야하는지 설정
-        // 기본값은 false
-        unique : false
-    })
-    title : string;
+    @Column()
+    email: string;
+
+    // @Column({
+    //     // DB에서 인지하는 컬럼 타입
+    //     // 미설정 시 자동으로 유추됨
+    //     type : 'varchar',
+    //     // 데이터베이스 컬럼이름
+    //     // 미설정 시 프로퍼티 이름으로 자동유추됨
+    //     name : 'title',
+    //     // 값의 길이
+    //     // 입력 할 수 있는 글자의 길이 설정
+    //     length : 300,
+    //     // default : true (null 입력 가능)
+    //     nullable : true,
+    //     // false 면 처음 저장할 때 값으로 고정
+    //     // false일 땐 이후에는 값 변경이 불가능
+    //     update : true,
+    //     // 기본값은 true
+    //     // find()를 실행할 때 기본으로 값을 불러올지 설정
+    //     // 아래와 같이 옵션을 줘야하며 필요한 값들도 저렇게 설정해야함.
+    //     // find({
+    //     //     select : {
+    //     //           id : true,
+    //     //           title : true
+    //     //      }
+    //     // })
+    //     select : true,
+    //     // 아무것도 입력하지 않았을 시 기본이 되는값
+    //     default : 'default value',
+    //     // 컬럼 중에서 유일무이한 갑이 돼어야하는지 설정
+    //     // 기본값은 false
+    //     unique : false
+    // })
+    // title : string;
 
     @Column({
         type : 'enum',
@@ -100,4 +105,7 @@ export class UserModel{
     })
     @Generated('uuid')
     additionalId : number;
+
+    @OneToOne(() => ProfileModel, (profile)=> profile.user)
+    profile:ProfileModel;
 }
