@@ -1,12 +1,14 @@
 import {
     Column,
-    CreateDateColumn, Entity, Generated, OneToOne,
+    CreateDateColumn, Entity, Generated, OneToMany, OneToOne,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
     VersionColumn
 } from "typeorm";
 import {ProfileModel} from "./profile.entity";
 import {JoinColumn} from "typeorm";
+import {PostModel} from "./post.entity";
+import {Post} from "@nestjs/common";
 
 export enum Role{
     USER = 'user',
@@ -108,4 +110,7 @@ export class UserModel{
 
     @OneToOne(() => ProfileModel, (profile)=> profile.user)
     profile:ProfileModel;
+
+    @OneToMany(() => PostModel, (posts) => posts.author)
+    posts : PostModel[];
 }
