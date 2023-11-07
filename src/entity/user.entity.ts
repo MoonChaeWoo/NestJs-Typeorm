@@ -132,4 +132,9 @@ export class UserModel{
     profile:ProfileModel;
     @OneToMany(() => PostModel, (posts) => posts.author)
     posts : PostModel[];
+
+    @Column({
+        default : 0
+    })
+    count : number;
 }

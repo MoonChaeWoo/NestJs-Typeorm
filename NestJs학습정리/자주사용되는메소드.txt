@@ -1,0 +1,67 @@
+const user1 = this.userRepository.create({
+email : 'test@google.com',
+});
+
+// const user2 = await this.userRepository.save(user1)
+// preload
+// 입력된 값을 기반으로 데이터베이스에 있는 데이터를 불러오고
+// 추가 입력된 값으로 데이터베이스에서 가져온 값들을 수정한
+// 해당 모델에 대한 타입의 객체를 생성해냄
+// 간단하게 {...user, email : 'test'} 이렇게 함
+// DB에 저장하지는 않음
+const user3 = this.userRepository.preload({
+id : 101,
+email : 'preloadTest@google.com'
+});
+
+// 삭제하기
+// pk의 대한 값만 넣어준다
+await this.userRepository.delete(101);
+
+// increment({원하는 컬럼 : 찾는 값, 값을 증가 시키고 싶은 컬럼, 몇씩 올릴건지 양})
+// await this.userRepository.increment({
+//   id : 1
+// }, 'count', 2)
+
+// increment와 반대로 값을 줄임, 사용법은 위과 같음
+// await this.userRepository.decrement({
+//   id : 1
+// }, 'count', 2)
+
+// 갯수 count 기능
+// const count = this.userRepository.count({
+//   where : {
+//     id : MoreThanOrEqual(100)
+//   }
+// })
+
+// 해당 컬럼의 합계에 대한 기능
+// 두번째에는 컬럼의 조건에 만족하는 컬럼의 합계를 구해준다.
+// const sum = this.userRepository.sum('count',{
+//   id : LessThan(10)
+// });
+
+const avg = this.userRepository.average('count', {
+id : LessThan(10)
+})
+
+const min = this.userRepository.minimum('count', {
+id : LessThan(10)
+})
+
+const max = this.userRepository.maximum('count', {
+id : LessThan(10)
+})
+
+const userOne = this.userRepository.findOne({
+where : {
+id : LessThan(10)
+}
+})
+
+// 조건에 해당하는 데이터들을 반환하고 마지막에 총 갯수를 반환해줌
+const userFindCount = this.userRepository.findAndCount({
+where : {
+id : LessThan(5)
+}
+})
