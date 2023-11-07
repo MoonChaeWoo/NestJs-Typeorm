@@ -28,15 +28,50 @@ export class AppController {
 
   @Get('users')
   getUsers(){
-    return this.userRepository.find({relations:{
-        profile: true,
-        posts : true
-      }}/*{
+    return this.userRepository.find({
+      // 어떤 프로퍼티를 선택할지 설택
+      // 기본은 모든 프로퍼티를 가져온다.
+      // 만약 select를 정의하지 않는다면 모든 것들을 가져오고
+      // 정의하지 않았을 시 정의된 프로퍼티만 가져온다.
       select : {
         id : true,
-        title : true
-      }
-    }*/);
+        version : true,
+        profile : {
+          id : true
+        }
+      },
+      // where의 키값에 대한 조건들은 AND로 묶이게 된다.
+      // OR조건을 주고 싶다면 배열형태로 주면 된다.
+      where : [
+          {
+            id : 1,
+            //version : 1 이건 id = 1AND version = 1; 로 된다는 의미이다.
+          },
+          {
+            version : 1 // 이땐 id = 1 OR version = 1; 로 된다.
+          },
+          {
+            profile : {
+              id : 3
+            }
+          }
+      ],
+      // 관계를 가져오는 법
+      // 엔티티에서 eager을 true 한다면 따로 find에서 옵션을 주지 않아도
+      // 값이 관계에 대한 값은 불러와진다.
+      // relations 옵션을 추가하는 순간부터 select와 where등에 사용이 가능해진다.
+      relations: {
+        profile : true
+      },
+      // 오름차순, 내림차순 정의 가능
+      order : {
+        id : 'ASC'
+      },
+      // 처음 몇개를 생략할지 갯수를 작성한다.
+      skip : 1,
+      // 몇개를 가져올 지 갯수를 작성한다.
+      take : 2,
+    });
   }
 
   @Patch('users/:id')
@@ -52,13 +87,16 @@ export class AppController {
   @Post('user/profile')
   async createUserAndProfile(){
     const user = await this.userRepository.save({
-        email: 'tyche0322@naver.com'
+        email: 'tyche0322@naver.com',
+        profile : {
+          profileImg : 'asdf.jpg'
+        }
     });
 
-    const profile = await this.profileRepository.save({
-      profileImg : 'profileTest.jpg',
-      user
-    });
+    // const profile = await this.profileRepository.save({
+    //   profileImg : 'profileTest.jpg',
+    //   user
+    // });
 
     return user;
   }
