@@ -1,5 +1,17 @@
 import {Controller, Get, Param, Patch, Post} from '@nestjs/common';
-import {Repository} from "typeorm";
+import {
+  Between,
+  ILike,
+  In,
+  IsNull,
+  LessThan,
+  LessThanOrEqual,
+  Like,
+  MoreThan,
+  MoreThanOrEqual,
+  Not,
+  Repository
+} from "typeorm";
 import {InjectRepository} from "@nestjs/typeorm";
 import {UserModel} from "./entity/user.entity";
 import {ProfileModel} from "./entity/profile.entity";
@@ -21,9 +33,12 @@ export class AppController {
 
   @Post('users')
   postUsers(){
-    return this.userRepository.save({
-      //title : 'test_title'
-    });
+    for(let i = 0; i <100; i++){
+      this.userRepository.save({
+        email : `email_test${i}@google.com`
+      });
+    }
+    return true;
   }
 
   @Get('users')
@@ -33,44 +48,65 @@ export class AppController {
       // 기본은 모든 프로퍼티를 가져온다.
       // 만약 select를 정의하지 않는다면 모든 것들을 가져오고
       // 정의하지 않았을 시 정의된 프로퍼티만 가져온다.
-      select : {
-        id : true,
-        version : true,
-        profile : {
-          id : true
-        }
-      },
+      // select : {
+      //   id : true,
+      //   version : true,
+      //   profile : {
+      //     id : true
+      //   }
+      // },
       // where의 키값에 대한 조건들은 AND로 묶이게 된다.
       // OR조건을 주고 싶다면 배열형태로 주면 된다.
-      where : [
-          {
-            id : 1,
-            //version : 1 이건 id = 1AND version = 1; 로 된다는 의미이다.
-          },
-          {
-            version : 1 // 이땐 id = 1 OR version = 1; 로 된다.
-          },
-          {
-            profile : {
-              id : 3
-            }
-          }
-      ],
+      where : {
+        // id : Not(1),
+        // id가 1이 아닌 것들을 선택
+
+        // id : LessThan(10),
+        // 보다 작은 값을 찾을 때 사용한다.
+
+        // id : LessThanOrEqual(10),
+        // 작거나 같은 값을 선택할 때 사용한다.
+
+        // id : MoreThan(10),
+        // 보다 큰 것을 찾을 때 사용한다.
+
+        // id : MoreThanOrEqual(10),
+        // 보다 크거나 같은 값을 찾을 때 사용한다.
+
+        // id : 1 또는 id : Equal(1),
+
+        // like와 같은 기능
+        // %를 꼭 넣어주어야한다.
+        // 앞에 어떤 글자가 와도 된다. %google
+        // email: Like('%google'),
+
+        // 대소문자 구별 안하는 like
+        // email : ILike('%google%'),
+
+        // 사이값
+        // id : Between(10, 15),
+
+        // 해당되는 여러개의 값
+        // id : In(1, 3, 5, 7, 10),
+
+        // null인것을 찾기
+        //id : IsNull(),
+      },
       // 관계를 가져오는 법
       // 엔티티에서 eager을 true 한다면 따로 find에서 옵션을 주지 않아도
       // 값이 관계에 대한 값은 불러와진다.
       // relations 옵션을 추가하는 순간부터 select와 where등에 사용이 가능해진다.
-      relations: {
-        profile : true
-      },
+      // relations: {
+      //   profile : true
+      // },
       // 오름차순, 내림차순 정의 가능
-      order : {
-        id : 'ASC'
-      },
+      // order : {
+      //   id : 'ASC'
+      // },
       // 처음 몇개를 생략할지 갯수를 작성한다.
-      skip : 1,
+      // skip : 1,
       // 몇개를 가져올 지 갯수를 작성한다.
-      take : 2,
+      // take : 2,
     });
   }
 
